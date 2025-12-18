@@ -1,0 +1,8 @@
+{
+  "name": "Windows 12 Evolution",
+  "description": "A high-fidelity next-gen operating system simulator featuring a glassmorphism UI, window management, and integrated Gemini AI 'Copilot' for a futuristic computing experience.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
