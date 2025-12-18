@@ -6,7 +6,7 @@ import Window from './components/Window';
 import Explorer from './apps/Explorer';
 import Browser from './apps/Browser';
 import Copilot from './apps/Copilot';
-import Weather from './apps/Weather';
+import WeatherApp from './apps/Weather';
 import Calculator from './apps/Calculator';
 import Notepad from './apps/Notepad';
 import Settings from './apps/Settings';
@@ -26,21 +26,24 @@ const App: React.FC = () => {
   const [activeAppId, setActiveAppId] = useState<string | null>(null);
   const [zIndexCounter, setZIndexCounter] = useState(10);
   const [contextMenu, setContextMenu] = useState<{ x: number, y: number } | null>(null);
-  
+  const [time, setTime] = useState(new Date());
+
   const [osSettings, setOsSettings] = useState<OSSettings>({
     wallpaper: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2564',
     isLiquidGlass: true,
     currentWifi: 'LTT_Dev_Network',
-    userName: 'LTT Developer',
-    userEmail: 'admin@evolution.sys',
+    userName: 'Abdi',
+    userEmail: 'username@email.com',
     isDarkMode: true
   });
 
   useEffect(() => {
+    const clock = setInterval(() => setTime(new Date()), 1000);
     if (osState === 'booting' || osState === 'restarting') {
       const timer = setTimeout(() => setOsState('locked'), 3000);
-      return () => clearTimeout(timer);
+      return () => { clearTimeout(timer); clearInterval(clock); };
     }
+    return () => clearInterval(clock);
   }, [osState]);
 
   const closeAllFlyouts = useCallback(() => {
@@ -65,7 +68,7 @@ const App: React.FC = () => {
     { id: 'copilot', name: 'Copilot', icon: 'fa-microchip', color: 'text-blue-400', component: <Copilot /> },
     { id: 'explorer', name: 'File Explorer', icon: 'fa-folder', color: 'text-yellow-400', component: <Explorer /> },
     { id: 'browser', name: 'Browser', icon: 'fa-earth-americas', color: 'text-blue-500', component: <Browser /> },
-    { id: 'weather', name: 'Weather', icon: 'fa-cloud-sun', color: 'text-orange-400', component: <Weather /> },
+    { id: 'weather', name: 'Weather', icon: 'fa-cloud-sun', color: 'text-orange-400', component: <WeatherApp /> },
     { id: 'notepad', name: 'Notepad', icon: 'fa-note-sticky', color: 'text-zinc-400', component: <Notepad /> },
     { id: 'calculator', name: 'Calculator', icon: 'fa-calculator', color: 'text-green-500', component: <Calculator /> },
     { id: 'settings', name: 'Settings', icon: 'fa-gear', color: 'text-zinc-500', component: <Settings settings={osSettings} setSettings={updateSettings} /> },
@@ -105,37 +108,26 @@ const App: React.FC = () => {
     closeAllFlyouts();
   };
 
-  // Power Off Screen
   if (osState === 'power-off') {
     return (
-      <div className="w-screen h-screen bg-black flex flex-col items-center justify-center animate-in fade-in duration-1000">
-        <div className="text-white/40 text-sm tracking-[0.5em] uppercase">Shutting down...</div>
+      <div className="w-screen h-screen bg-black flex flex-col items-center justify-center animate-fade">
+        <div className="text-white/20 text-xs tracking-[0.5em] uppercase font-light">Shutting down system...</div>
       </div>
     );
   }
 
   if (osState === 'booting' || osState === 'restarting') {
     return (
-      <div className="w-screen h-screen bg-[#050505] flex flex-col items-center justify-center">
-        <div className="w-20 h-20 relative animate-[spin_3s_linear_infinite]">
-           <div className="absolute inset-0 border-4 border-t-blue-500 border-r-transparent border-b-transparent border-l-transparent rounded-full" />
+      <div className="w-screen h-screen bg-black flex flex-col items-center justify-center">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-400 via-pink-500 to-purple-600 flex items-center justify-center animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.2)]">
+           <i className="fa-solid fa-bolt text-white text-4xl"></i>
         </div>
-        <div className="mt-12 flex flex-col items-center">
-          <svg viewBox="0 0 24 24" className="w-10 h-10 fill-blue-500">
-             <path d="M10.5,2V11.5H2V3A1,1,0,0,1,3,2Z" />
-             <path d="M22,2V11.5H12.5V2H21A1,1,0,0,1,22,2Z" />
-             <path d="M10.5,12.5V22H3a1,1,0,0,1-1-1V12.5Z" />
-             <path d="M22,12.5V21a1,1,0,0,1-1,1H12.5V12.5Z" />
-          </svg>
-          <span className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-medium mt-6">
-            {osState === 'restarting' ? 'Restarting' : 'Evolution'}
-          </span>
+        <div className="mt-12 text-[10px] text-white/20 uppercase tracking-[0.8em] font-medium animate-pulse">
+           Evolution
         </div>
       </div>
     );
   }
-
-  const glassClass = osSettings.isLiquidGlass ? 'liquid-glass' : 'bg-[#1c1c1c] border-white/10';
 
   return (
     <div 
@@ -144,70 +136,77 @@ const App: React.FC = () => {
       onClick={closeAllFlyouts}
       onContextMenu={(e) => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY }); }}
     >
-      {osState === 'locked' && (
-        <LockScreen 
-          wallpaper={osSettings.wallpaper} 
-          onUnlock={() => setOsState('login')} 
-        />
-      )}
+      {osState === 'locked' && <LockScreen wallpaper={osSettings.wallpaper} onUnlock={() => setOsState('login')} />}
+      {osState === 'login' && <LoginScreen wallpaper={osSettings.wallpaper} userName={osSettings.userName} onLogin={() => setOsState('desktop')} />}
 
-      {osState === 'login' && (
-        <LoginScreen 
-          wallpaper={osSettings.wallpaper}
-          userName={osSettings.userName}
-          onLogin={() => setOsState('desktop')}
-        />
-      )}
-
-      {/* Desktop Workspace */}
-      <div className={`relative w-full h-full p-8 transition-all duration-700 ${osState === 'desktop' ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none blur-3xl'}`}>
-        <div className="flex flex-col gap-10 flex-wrap h-[calc(100%-150px)] w-min">
-           {[
-             { id: 'explorer', icon: 'fa-folder', color: 'text-yellow-400', name: 'System' },
-             { id: 'copilot', icon: 'fa-microchip', color: 'text-blue-400', name: 'Copilot' },
-             { id: 'settings', icon: 'fa-gear', color: 'text-zinc-300', name: 'Settings' }
-           ].map(item => (
-             <div 
-               key={item.id}
-               className="flex flex-col items-center gap-2 group w-24 cursor-pointer"
-               onDoubleClick={() => launchApp(item.id as AppID)}
-             >
-                <div className="w-16 h-16 flex items-center justify-center text-5xl transition-all group-hover:scale-110 group-active:scale-95 drop-shadow-2xl">
-                  <i className={`fa-solid ${item.icon} ${item.color}`}></i>
-                </div>
-                <span className="text-[10px] font-bold text-white text-center bg-black/40 backdrop-blur-md px-3 py-1 rounded-full shadow-lg border border-white/5 whitespace-nowrap">
-                  {item.name}
-                </span>
-             </div>
-           ))}
-        </div>
-
-        {/* Windows */}
-        {windows.map(win => {
-          const app = APPS.find(a => a.id === win.id);
-          if (!app || win.isMinimized) return null;
-          return (
-            <Window
-              key={win.id}
-              title={win.title}
-              icon={`fa-solid ${app.icon} ${app.color}`}
-              onClose={() => closeWindow(win.id)}
-              onMinimize={() => setWindows(prev => prev.map(w => w.id === win.id ? { ...w, isMinimized: true } : w))}
-              onMaximize={() => setWindows(prev => prev.map(w => w.id === win.id ? { ...w, isMaximized: !w.isMaximized } : w))}
-              isMaximized={win.isMaximized}
-              zIndex={win.zIndex}
-              onClick={() => focusWindow(win.id)}
-              isLiquidGlass={osSettings.isLiquidGlass}
-            >
-              {app.component}
-            </Window>
-          );
-        })}
-      </div>
-
-      {/* OS Shell Layer */}
+      {/* Desktop Shell Components */}
       {osState === 'desktop' && (
-        <>
+        <div className="relative w-full h-full p-8 animate-fade">
+          
+          {/* Top Floating Status Bars */}
+          <div className="absolute top-8 left-8 right-8 flex items-center justify-between pointer-events-none">
+            {/* Weather Widget */}
+            <div 
+              className="flex items-center gap-3 px-5 py-2.5 floating-bar pointer-events-auto cursor-pointer hover:bg-white/10 transition-all active:scale-95"
+              onClick={() => launchApp('weather')}
+            >
+              <i className="fa-solid fa-cloud-sun text-yellow-400"></i>
+              <div className="text-sm font-medium">26°C <span className="text-white/60 ml-2">Partly Cloudy</span></div>
+            </div>
+
+            {/* Centered Search Bar */}
+            <div className="flex-1 flex justify-center">
+              <div 
+                className="flex items-center gap-4 px-8 py-3 floating-bar w-full max-w-[400px] pointer-events-auto cursor-text hover:bg-white/10 transition-all shadow-xl"
+                onClick={() => setIsStartOpen(true)}
+              >
+                <i className="fa-solid fa-magnifying-glass text-white/40 text-sm"></i>
+                <span className="text-sm text-white/30 font-light">Type here to search</span>
+              </div>
+            </div>
+
+            {/* System Tray */}
+            <div className="flex items-center gap-5 px-6 py-2.5 floating-bar pointer-events-auto shadow-lg">
+              <div className="flex gap-5 text-white/60 text-sm border-r border-white/10 pr-5">
+                <i className="fa-solid fa-keyboard cursor-pointer hover:text-white transition-colors"></i>
+                <i className="fa-solid fa-volume-high cursor-pointer hover:text-white transition-colors"></i>
+                <i className="fa-solid fa-wifi cursor-pointer hover:text-white transition-colors"></i>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col items-end leading-none gap-1">
+                   <span className="text-sm font-bold tracking-tight">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                   <span className="text-[10px] text-white/40 uppercase tracking-tighter">{time.toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
+                </div>
+                <i className="fa-solid fa-moon text-white/40 cursor-pointer hover:text-indigo-400 transition-colors"></i>
+              </div>
+            </div>
+          </div>
+
+          {/* Windows Layer */}
+          <div className="relative w-full h-full pt-20">
+            {windows.map(win => {
+              const app = APPS.find(a => a.id === win.id);
+              if (!app || win.isMinimized) return null;
+              return (
+                <Window
+                  key={win.id}
+                  title={win.title}
+                  icon={`fa-solid ${app.icon} ${app.color}`}
+                  onClose={() => closeWindow(win.id)}
+                  onMinimize={() => setWindows(prev => prev.map(w => w.id === win.id ? { ...w, isMinimized: true } : w))}
+                  onMaximize={() => setWindows(prev => prev.map(w => w.id === win.id ? { ...w, isMaximized: !w.isMaximized } : w))}
+                  isMaximized={win.isMaximized}
+                  zIndex={win.zIndex}
+                  onClick={() => focusWindow(win.id)}
+                  isLiquidGlass={osSettings.isLiquidGlass}
+                >
+                  {app.component}
+                </Window>
+              );
+            })}
+          </div>
+
+          {/* Taskbar & Menu Layer */}
           <Widgets isOpen={isWidgetsOpen} isLiquidGlass={osSettings.isLiquidGlass} />
           <StartMenu 
             apps={APPS} 
@@ -215,6 +214,7 @@ const App: React.FC = () => {
             isOpen={isStartOpen} 
             isLiquidGlass={osSettings.isLiquidGlass}
             onPowerAction={handlePowerAction}
+            userName={osSettings.userName}
           />
           <ControlCenter 
             isOpen={isControlOpen} 
@@ -228,9 +228,9 @@ const App: React.FC = () => {
             activeAppId={activeAppId}
             onLaunch={launchApp}
             isLiquidGlass={osSettings.isLiquidGlass}
-            onStartToggle={(e) => { e?.stopPropagation(); setIsStartOpen(!isStartOpen); setIsWidgetsOpen(false); setIsControlOpen(false); }}
-            onWidgetsToggle={(e) => { e?.stopPropagation(); setIsWidgetsOpen(!isWidgetsOpen); setIsStartOpen(false); setIsControlOpen(false); }}
-            onControlToggle={(e) => { e?.stopPropagation(); setIsControlOpen(!isControlOpen); setIsStartOpen(false); setIsWidgetsOpen(false); }}
+            onStartToggle={(e) => { e?.stopPropagation(); setIsStartOpen(!isStartOpen); }}
+            onWidgetsToggle={(e) => { e?.stopPropagation(); setIsWidgetsOpen(!isWidgetsOpen); }}
+            onControlToggle={(e) => { e?.stopPropagation(); setIsControlOpen(!isControlOpen); }}
             openWindows={windows.map(w => w.id)}
           />
 
@@ -243,7 +243,7 @@ const App: React.FC = () => {
               onPersonalize={() => { setContextMenu(null); launchApp('settings'); }}
             />
           )}
-        </>
+        </div>
       )}
 
       {/* Dynamic Background Noise */}

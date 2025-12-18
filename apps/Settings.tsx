@@ -136,7 +136,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
                   </div>
                   <div>
                     <div className="font-bold">Liquid Glass Engine</div>
-                    <div className="text-xs text-white/40 italic">99% Transparency mode (iOS-style crystal UI)</div>
+                    <div className="text-xs text-white/40 italic">True 99% Transparency mode (Clear Glass)</div>
                   </div>
                </div>
                <button 
