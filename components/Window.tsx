@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface WindowProps {
   title: string;
@@ -26,8 +26,8 @@ const Window: React.FC<WindowProps> = ({
   isLiquidGlass,
   children
 }) => {
-  const [position, setPosition] = useState({ x: 100 + Math.random() * 100, y: 100 + Math.random() * 100 });
-  const [size, setSize] = useState({ width: 900, height: 650 });
+  const [position, setPosition] = useState({ x: 120 + Math.random() * 80, y: 120 + Math.random() * 80 });
+  const [size, setSize] = useState({ width: 960, height: 680 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   
@@ -57,43 +57,47 @@ const Window: React.FC<WindowProps> = ({
   const glassStyle = isLiquidGlass ? "liquid-glass" : "standard-blur";
 
   const style: React.CSSProperties = isMaximized 
-    ? { top: 0, left: 0, width: '100%', height: 'calc(100% - 72px)', zIndex, borderRadius: 0 }
+    ? { top: 0, left: 0, width: '100%', height: 'calc(100% - 100px)', zIndex, borderRadius: 0 }
     : { 
         top: position.y, 
         left: position.x, 
         width: size.width, 
         height: size.height, 
         zIndex,
-        transition: isDragging ? 'none' : 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-        borderRadius: '16px'
+        transition: isDragging ? 'none' : 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)',
+        borderRadius: '32px'
       };
 
   return (
     <div
       style={style}
-      className={`fixed flex flex-col overflow-hidden window-shadow border shadow-2xl ${glassStyle} ${isDragging ? 'opacity-85 scale-[1.005]' : 'opacity-100'}`}
+      className={`fixed flex flex-col overflow-hidden window-shadow border-2 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.7)] ${glassStyle} ${isDragging ? 'opacity-90 scale-[1.01]' : 'opacity-100'} border-white/20`}
       onClick={onClick}
     >
+      {/* Title Bar - Minimalist Glass */}
       <div 
-        className={`h-12 flex items-center justify-between px-4 cursor-default select-none shrink-0 border-b ${isLiquidGlass ? 'bg-white/5 border-white/10' : 'bg-black/20 border-white/5'}`}
+        className={`h-14 flex items-center justify-between px-6 cursor-default select-none shrink-0 border-b ${isLiquidGlass ? 'bg-white/5 border-white/10' : 'bg-black/20 border-white/10'} backdrop-blur-2xl`}
         onMouseDown={handleMouseDown}
         onDoubleClick={onMaximize}
       >
-        <div className="flex items-center gap-3">
-          <i className={`${icon} text-sm`}></i>
-          <span className="text-xs font-semibold tracking-wide text-white/90">{title}</span>
+        <div className="flex items-center gap-4">
+          <i className={`${icon} text-[15px] drop-shadow-md`}></i>
+          <span className="text-[12px] font-black tracking-[0.1em] text-white/80 uppercase">{title}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <button onClick={onMinimize} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"><i className="fa-solid fa-minus text-[10px]"></i></button>
-          <button onClick={onMaximize} className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-lg transition-colors"><i className="fa-regular fa-square text-[10px]"></i></button>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center hover:bg-red-500 rounded-lg group transition-colors"><i className="fa-solid fa-xmark text-[10px] group-hover:text-white"></i></button>
+        <div className="flex items-center gap-2">
+          <button onClick={onMinimize} className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-xl transition-all active:scale-90"><i className="fa-solid fa-minus text-[11px] opacity-60"></i></button>
+          <button onClick={onMaximize} className="w-9 h-9 flex items-center justify-center hover:bg-white/10 rounded-xl transition-all active:scale-90"><i className="fa-regular fa-square text-[11px] opacity-60"></i></button>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center hover:bg-red-500 rounded-xl group transition-all active:scale-90"><i className="fa-solid fa-xmark text-[11px] group-hover:text-white opacity-60 group-hover:opacity-100"></i></button>
         </div>
       </div>
+      
+      {/* Content Area */}
       <div className="flex-1 overflow-hidden relative">
-        {isLiquidGlass && <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/5 pointer-events-none" />}
         <div className="h-full relative z-10">
           {children}
         </div>
+        {/* Subtle Surface Reflection */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-white/[0.05] pointer-events-none" />
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 
-export type AppID = 'explorer' | 'browser' | 'copilot' | 'settings' | 'calculator' | 'weather' | 'notepad';
+import React from 'react';
+
+export type AppID = 'explorer' | 'browser' | 'copilot' | 'settings' | 'calculator' | 'weather' | 'notepad' | 'store' | 'camera';
 
 export interface WindowState {
   id: AppID;
@@ -15,7 +17,7 @@ export interface AppConfig {
   name: string;
   icon: string;
   color: string;
-  component: React.ReactNode;
+  Component: React.ComponentType<any>;
 }
 
 export interface OSSettings {

@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 12 Evolution</title>
+    <title>Windows 26 Evolution</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
         
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.01);
+            --glass-border: rgba(255, 255, 255, 0.3);
         }
 
         body {
@@ -21,54 +21,54 @@
             user-select: none;
             background: #000;
             color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* 99% Crystal Clear Liquid Glass - Truly Transparent (Trong suốt) */
+        /* Crystal Liquid Glass - Windows 26 Signature */
         .liquid-glass {
-            background: rgba(255, 255, 255, 0.01) !important;
-            backdrop-filter: blur(0px) saturate(100%);
-            -webkit-backdrop-filter: blur(0px) saturate(100%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 25px 60px rgba(0, 0, 0, 0.5);
         }
         
-        /* Standard Misty Blur (Bóng mờ) */
         .standard-blur {
-            background: rgba(25, 25, 25, 0.6) !important;
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(10, 10, 10, 0.6) !important;
+            backdrop-filter: blur(50px) saturate(200%);
+            -webkit-backdrop-filter: blur(50px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
         }
 
         .floating-bar {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
         }
 
+        /* Smooth UI Elements */
         .window-shadow {
-            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8), 0 30px 60px -30px rgba(0, 0, 0, 0.9);
         }
 
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
+        @keyframes scaleIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        
         .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-scale { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-scale { animation: scaleIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; transition: background 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
 
-        /* Hide focus outlines for aesthetic reasons */
         input:focus { outline: none; }
+        button:active { transform: scale(0.96); }
     </style>
 <script type="importmap">
 {
